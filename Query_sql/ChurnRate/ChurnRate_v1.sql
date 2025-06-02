@@ -10,7 +10,7 @@ SELECT
 	LEFT JOIN gorpdwhbi..dimcustomer e WITH (NOLOCK) ON e.customerid = a.custaccount AND e.DataAreaId = a.DATAAREAID
 	LEFT JOIN gorpdwhbi..DimStore s  WITH (NOLOCK) ON a.STORE = s.StoreId AND a.DATAAREAID = s.DataAreaId
 	INNER JOIN gorpdwhbi..DataMemberReferralTokoAkuisisi t  WITH (NOLOCK)ON s.StoreId = t.referral_from and t.myvalue_id = e.MyValueId
-	LEFT join [GORPDWHBI].[dbo].[DimRegion] WITH (NOLOCK) h on s.RegionId = h.RegionId 
+	LEFT join [GORPDWHBI].[dbo].[DimRegion]  h WITH (NOLOCK) on s.RegionId = h.RegionId 
 	WHERE 
 		a.transdate BETWEEN '20221201' AND '20241231'
 		AND b.transactionstatus IN (0, 2)  
