@@ -1,0 +1,17 @@
+SELECT
+b.TRANSACTIONID,
+c.DeptName
+FROM GORPDWH365.dbo.retailtransactionsalestrans a
+LEFT JOIN GORPDWH365.dbo.RETAILTRANSACTIONTABLE b ON a.TRANSACTIONID = b.TRANSACTIONID
+LEFT JOIN GORPDWHBI.dbo.DimProduct c on a.ITEMID = c.ItemID and a.DATAAREAID = c.DataAreaId
+LEFT JOIN GORPDWHBI.dbo.DimCustomer d on a.CUSTACCOUNT = d.CustomerId and a.DATAAREAID = d.DataAreaId
+LEFT JOIN GORPDWHBI.dbo.DimStore e on b.STORE = e.StoreId
+--WAJIB
+WHERE a.TRANSDATE BETWEEN '2024-01-01 00:00:00.000' AND '2024-12-31 00:00:00.000'
+  and b.TYPE IN (2,19)
+  and b.ENTRYSTATUS IN (0,2)
+  and a.TRANSACTIONSTATUS IN (0,2)
+  --WAJIB
+  and c.DivName LIKE '%DIV BOOKS%'
+  and c.DeptName IS NOT NULL
+  and e.StoreName LIKE '%BSD%'

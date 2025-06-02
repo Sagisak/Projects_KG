@@ -1,0 +1,32 @@
+SELECT TOP (100)
+d.myvalueid,
+c.ItemDesc,
+SUM(a.QTY * -1) AS QTY_sold
+FROM GORPDWH365.dbo.retailtransactionsalestrans a
+INNER JOIN GORPDWH365.dbo.RETAILTRANSACTIONTABLE b ON a.TRANSACTIONID = b.TRANSACTIONID
+INNER JOIN GORPDWHBI.dbo.DimProduct c on a.ITEMID = c.ItemID and a.DATAAREAID = c.DataAreaId
+INNER JOIN GORPDWHBI.dbo.DimCustomer d on a.CUSTACCOUNT = d.CustomerId and a.DATAAREAID = d.DataAreaId
+INNER JOIN GORPDWH365.dbo.SALESTABLE st 
+    ON st.DATAAREAID = a.DATAAREAID
+LEFT JOIN GORPDWH365.dbo.SALESPOOL sp 
+    ON (
+        (st.SALESPOOLID = sp.SALESPOOLID) OR 
+        (st.SALESPOOLID IS NULL AND sp.SALESPOOLID = '001')
+    ) AND st.DATAAREAID = sp.DATAAREAID
+INNER JOIN GORPDWHBI.dbo.DimStore e on b.STORE = e.StoreId
+--WAJIB
+WHERE a.TRANSDATE BETWEEN '2024-01-01 00:00:00.000' AND '2024-06-01 00:00:00.000'
+  and ISNULL(st.SALESPOOLID, '001') IN ('001', '030')
+  and b.TYPE IN (2,19)
+  and b.ENTRYSTATUS IN (0,2)
+  and a.TRANSACTIONSTATUS IN (0,2)
+  --WAJIB
+  AND c.DeptName IN ('Dep Novels')
+  and c.DivName LIKE '%DIV BOOKS%'
+  and e.StoreName LIKE '%MARGONDA%'
+  AND st.SALESPOOLID IS NOT NULL
+  and c.DeptName IS NOT NULL
+  and d.MyValueId IS NOT NULL
+  GROUP BY c.ItemDesc, d.MyValueId
+  order by QTY_sold DESC
+  
