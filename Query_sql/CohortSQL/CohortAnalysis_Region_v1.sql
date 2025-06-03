@@ -40,8 +40,8 @@ ActivityWithOffset AS (
 )
 SELECT 
   Area,
-  cohort_label,
-  month_offset,
+  cohort_label as 'First Transaction',
+  month_offset as 'bulan transaksi kembali',
   COUNT(DISTINCT CustomerId) AS active_users
 FROM ActivityWithOffset	
 GROUP BY cohort_label, cohort_month_number, month_offset, cohort_date, Area
