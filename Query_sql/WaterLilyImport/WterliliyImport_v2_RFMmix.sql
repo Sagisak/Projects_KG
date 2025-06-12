@@ -9,7 +9,7 @@ FROM [GORPDWH365].[dbo].[CUSTINVOICETRANS] ci with(nolock) --data transaksi dari
   inner join GORPDWHBI..DimProduct p  with(nolock) on ci.ITEMID = p.ItemID
 where p.ProdOwner in ('WATER LILY DISTRIBUTION','IMPORT BOOKS')
 and (isnull (st.SALESPOOLID,'001') ='001' or isnull (st.SALESPOOLID,'001')='030')
-and ci.INVOICEDATE >= '20250101'
+and ci.INVOICEDATE BETWEEN '20250101' AND '20250531'
 group by st.SALESID
 ),
 
@@ -27,13 +27,14 @@ FROM [GORPDWH365].[dbo].[CUSTINVOICETRANS] ci with(nolock) --data transaksi dari
   inner join GORPDWHBI..DimCustomer d with(nolock) on st.CUSTACCOUNT = d.CustomerId and st.DATAAREAID = d.DataAreaId 
   inner join GORPDWHBI..DimProduct p   with(nolock) on ci.ITEMID = p.ItemID
   inner join GORPDWHBI..ViewMasterDataGenderMember gm   with(nolock) on gm.MyValueId = d.MyValueId
-WHERE  ci.INVOICEDATE >= '20250101'
+  inner join GORPDWHBI..ViewRFMMei rfm with(nolock) on d.MyValueId = rfm.MyValueId
+WHERE  ci.INVOICEDATE BETWEEN '20250101' AND '20250531'
 and (isnull (st.SALESPOOLID,'001') ='001' or isnull (st.SALESPOOLID,'001')='030')
-and isnull (d.MyValueId,'')<>''
 and isnull (d.MyValueId,'')<>''
 and isnull (d.phone,'')<>''
 and isnull (d.EmailAddress,'')<>''
 and isnull (gm.gender,'')<>''
+and rfm.Status in ('Hero Customer', 'Mid attention')
 and p.ProdOwner in ('WATER LILY DISTRIBUTION','IMPORT BOOKS')
 )
 
